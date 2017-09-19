@@ -1,49 +1,36 @@
 import React from "react";
 import { ScrollView, Text, Linking, View } from "react-native";
 import { Card, Button } from "react-native-elements";
+import { getUsers } from '../auth';
 
-const images = [
-  {
-    key: 1,
-    name: "Nathan Anderson",
-    image: require("../images/1.jpg"),
-    url: "https://unsplash.com/photos/C9t94JC4_L8"
-  },
-  {
-    key: 2,
-    name: "Jamison McAndie",
-    image: require("../images/2.jpg"),
-    url: "https://unsplash.com/photos/waZEHLRP98s"
-  },
-  {
-    key: 3,
-    name: "Alberto Restifo",
-    image: require("../images/3.jpg"),
-    url: "https://unsplash.com/photos/cFplR9ZGnAk"
-  },
-  {
-    key: 4,
-    name: "John Towner",
-    image: require("../images/4.jpg"),
-    url: "https://unsplash.com/photos/89PFnHKg8HE"
+class Home extends React.Component {
+
+  state = {
+    users:[]
   }
-];
 
-export default () => (
-  <View style={{ flex: 1 }}>
-    <ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
-      {images.map(({ name, image, url, key }) => (
-        <Card title={`CARD ${key}`} image={image} key={key}>
-          <Text style={{ marginBottom: 10 }}>
-            Photo by {name}.
-          </Text>
-          <Button
-            backgroundColor="#03A9F4"
-            title="VIEW NOW"
-            onPress={() => Linking.openURL(url)}
-          />
-        </Card>
-      ))}
-    </ScrollView>
-  </View>
-);
+  componentWillMount() {
+    getUsers().then(res => {
+      this.setState({users: res})
+    })
+  }
+
+  render() {
+    const { users } = this.state;
+    return (
+      <View style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
+          {users.map(({ firstName, picUrl, id, key }) => (
+            <Card title={`CARD ${id}`} image={{uri:picUrl}} key={id}>
+              <Text style={{ marginBottom: 10 }}>
+                Photo by {firstName}.
+              </Text>
+            </Card>
+          ))}
+        </ScrollView>
+      </View>
+    )
+  }
+}
+
+export default Home
